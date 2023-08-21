@@ -56,13 +56,15 @@ public class UserEntity {
     )
     private List<Role> user_role = new ArrayList<Role>();
 
+    // the users that this user follow
     @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Following> follow;
+    private List<Following> follow = new ArrayList<>();
 
+    // the users that follow this user
     @OneToMany(mappedBy = "followed", cascade = CascadeType.ALL)
     @JsonIgnore
-    private List<Following> followers;
+    private List<Following> followers = new ArrayList<>();
 
 
 }

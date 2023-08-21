@@ -13,22 +13,24 @@ import java.util.Date;
 @NoArgsConstructor
 @Entity
 @Table(name = "Following")
+@IdClass(FollowingId.class)
 public class Following {
 
+
+    // the user who follow
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @ManyToOne
+    @JoinColumn(name = "follower_id")
+    private UserEntity follower;
+
+    // the user who had been followed
+    @Id
+    @ManyToOne
+    @JoinColumn(name = "followed_id")
+    private UserEntity followed;
 
     @Column(name = "folowingDate")
     @NotNull(message = "folowing date must not be null")
     private Date folowingDate;
-
-    @ManyToOne
-    @JoinColumn(name = "follower_id", referencedColumnName = "id")
-    private UserEntity follower;
-
-    @ManyToOne
-    @JoinColumn(name = "followed_id", referencedColumnName = "id")
-    private UserEntity followed;
 
 }
