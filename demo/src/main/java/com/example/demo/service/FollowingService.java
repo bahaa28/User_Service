@@ -1,12 +1,16 @@
 package com.example.demo.service;
 
+import com.example.demo.exception.DataIntegrityException;
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.ValidationException;
 import com.example.demo.model.Following;
 import com.example.demo.model.UserEntity;
 import com.example.demo.reposetories.FollowingRepository;
+import com.example.demo.reposetories.UserEntityRepository;
 import jakarta.validation.Valid;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,11 +22,14 @@ public class FollowingService {
     @Autowired
     private FollowingRepository followingRepository;
 
-    public List<Following> getAll(){
+    @Autowired
+    private UserEntityRepository userEntityRepository;
+
+    public List<Following> getAll() {
         return followingRepository.findAll();
     }
 
-    public Following add(@Valid Following following){
+    public Following add(@Valid Following following) {
         return followingRepository.save(following);
     }
 
@@ -42,7 +49,7 @@ public class FollowingService {
         return followings;
     }
 
-    public List<UserEntity> getFollowersOfUSer(Long userId) {
+    public List<UserEntity> getFollowersOfUser(long userId) {
         List<Following> followings = followingRepository.findByFollowed_Id(userId);
 
         if (followings.isEmpty()) {
@@ -57,7 +64,7 @@ public class FollowingService {
         return usersFollowing;
     }
 
-    public List<UserEntity> getWHoUserFollow(Long userId) {
+    public List<UserEntity> getWhoUserFollow(long userId) {
         List<Following> followings = followingRepository.findByFollower_Id(userId);
 
         if (followings.isEmpty()) {
@@ -70,5 +77,32 @@ public class FollowingService {
         }
 
         return usersFollowing;
+    }
+
+    public ResponseEntity<Following> getByCompositeIds(UserEntity follower, UserEntity followed) {
+        Following following = followingRepository.findByFollowerAndFollowed(follower, followed)
+                .orElseThrow(() -> new ResourceNotFoundException("Following not found for the given composite IDs"));
+
+        return ResponseEntity.ok(following);
+    }
+
+    public ResponseEntity<Following> follow(long follower, long followed) {
+        UserEntity user_follower = userEntityRepository.findById(follower).orElseThrow(() ->
+                new ResourceNotFoundException("user not exists with id: " + follower));
+        UserEntity user_followed = userEntityRepository.findById(followed).orElseThrow(() ->
+                new ResourceNotFoundException("user not exists with id: " + followed));
+
+        if (followingRepository.existsByFollowerAndFollowed(user_follower, user_followed)) {
+            throw new DataIntegrityException("the user of id: " + follower + " is already folow the user of id: " + followed);
+        } else {
+            Following following = new Following();
+            following.setFollower(user_follower);
+            following.setFollowed(user_followed);
+
+
+            followingRepository.save(following);
+
+            return ResponseEntity.ok(following);
+        }
     }
 }
