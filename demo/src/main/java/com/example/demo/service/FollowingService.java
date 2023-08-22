@@ -7,12 +7,11 @@ import com.example.demo.model.Following;
 import com.example.demo.model.UserEntity;
 import com.example.demo.reposetories.FollowingRepository;
 import com.example.demo.reposetories.UserEntityRepository;
-import jakarta.validation.Valid;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 

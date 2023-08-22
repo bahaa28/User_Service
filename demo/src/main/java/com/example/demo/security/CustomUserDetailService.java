@@ -1,4 +1,4 @@
-package com.example.demo.service;
+package com.example.demo.security;
 
 import com.example.demo.model.Role;
 import com.example.demo.model.UserEntity;
@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class JwtUserDetailsService implements UserDetailsService {
+public class CustomUserDetailService implements UserDetailsService {
+
 
     @Autowired
     private UserEntityRepository userEntityRepository;
@@ -32,5 +33,4 @@ public class JwtUserDetailsService implements UserDetailsService {
     private Collection<GrantedAuthority> mapRoleToAuthorities(List<Role> roles){
         return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
     }
-
 }

@@ -3,7 +3,6 @@ package com.example.demo.Controllers;
 import com.example.demo.model.Role;
 import com.example.demo.model.UserEntity;
 import com.example.demo.service.UserEntityService;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
