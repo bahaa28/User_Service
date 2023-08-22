@@ -1,6 +1,7 @@
 package com.example.demo.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -56,15 +57,29 @@ public class UserEntity {
     )
     private List<Role> user_role = new ArrayList<Role>();
 
-    // the users that this user follow
+    // ...
     @OneToMany(mappedBy = "follower", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("follower")
     @JsonIgnore
     private List<Following> follow = new ArrayList<>();
 
-    // the users that follow this user
     @OneToMany(mappedBy = "followed", cascade = CascadeType.ALL)
+    @JsonIgnoreProperties("followed")
     @JsonIgnore
     private List<Following> followers = new ArrayList<>();
+// ...
 
+
+    public void addFollower(Following following){
+        this.followers.add(following);
+    }
+
+    public void addFollowed(Following following){
+        this.follow.add(following);
+    }
+
+    public void addRole(Role role){
+        this.user_role.add(role);
+    }
 
 }

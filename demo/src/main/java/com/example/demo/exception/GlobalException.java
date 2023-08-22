@@ -96,4 +96,18 @@ public class GlobalException {
         return new ResponseEntity<ErrorObject>(errorObject, HttpStatus.FORBIDDEN);
     }
 
+    @ExceptionHandler(DataIntegrityException.class)
+    public ResponseEntity<ErrorObject> handleDataIntegrityException(
+            DataIntegrityException ex,
+            WebRequest request
+    ) {
+        ErrorObject errorObject = new ErrorObject(
+                HttpStatus.CONFLICT.value(),
+                ex.getMessage(),
+                new Date()
+        );
+
+        return new ResponseEntity<>(errorObject, HttpStatus.CONFLICT);
+    }
+
 }

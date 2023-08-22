@@ -37,8 +37,9 @@ public class RoleService {
                 new ResourceNotFoundException("Role not exists with id: " + id));
 
         updated.setName(role.getName());
+        roleRepository.save(updated);
 
-        return ResponseEntity.ok(role);
+        return ResponseEntity.ok(updated);
     }
 
     public ResponseEntity<Role> delete(long id){

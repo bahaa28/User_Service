@@ -1,7 +1,9 @@
 package com.example.demo.service;
 
 import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.model.Role;
 import com.example.demo.model.UserEntity;
+import com.example.demo.reposetories.RoleRepository;
 import com.example.demo.reposetories.UserEntityRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,9 @@ public class UserEntityService {
 
     @Autowired
     private UserEntityRepository userEntityRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     public List<UserEntity> getAll(){
         return userEntityRepository.findAll();
@@ -63,6 +68,39 @@ public class UserEntityService {
 
         return new ResponseEntity<UserEntity>(HttpStatus.NO_CONTENT);
     }
+
+    public ResponseEntity<UserEntity> addRole(@Valid Role role, long user_id){
+        UserEntity userEntity = userEntityRepository.findById(user_id).orElseThrow(() ->
+                new ResourceNotFoundException("User does not exists with id: " + user_id));
+
+        userEntity.addRole(role);
+
+        userEntityRepository.save(userEntity);
+
+        return ResponseEntity.ok(userEntity);
+    }
+
+    public ResponseEntity<UserEntity> addRole(long role_id, long user_id){
+        UserEntity userEntity = userEntityRepository.findById(user_id).orElseThrow(() ->
+                new ResourceNotFoundException("User does not exists with id: " + user_id));
+
+        Role role = roleRepository.findById(role_id).orElseThrow(() ->
+                new ResourceNotFoundException("role does not exists with id: " + role_id));
+
+        userEntity.addRole(role);
+
+        userEntityRepository.save(userEntity);
+
+        return ResponseEntity.ok(userEntity);
+    }
+
+    public ResponseEntity<String> addList(@Valid List<UserEntity> userEntityList){
+        for(UserEntity userEntity : userEntityList){
+            userEntityRepository.save(userEntity);
+        }
+        return ResponseEntity.ok("the users added successfully");
+    }
+
 
 
 

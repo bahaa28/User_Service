@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -23,14 +25,9 @@ public class Following {
     @JoinColumn(name = "follower_id")
     private UserEntity follower;
 
-    // the user who had been followed
     @Id
     @ManyToOne
     @JoinColumn(name = "followed_id")
     private UserEntity followed;
-
-    @Column(name = "folowingDate")
-    @NotNull(message = "folowing date must not be null")
-    private Date folowingDate;
 
 }
