@@ -7,6 +7,7 @@ import com.example.demo.model.Role;
 import com.example.demo.model.UserEntity;
 import com.example.demo.reposetories.RoleRepository;
 import com.example.demo.reposetories.UserEntityRepository;
+import com.example.demo.security.Constants;
 import com.example.demo.security.JWTGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Collections;
 
@@ -74,6 +78,22 @@ public class AuthController {
 
 
         return new ResponseEntity<AuthResponseDto>(new AuthResponseDto(token), HttpStatus.OK);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
+        // Clear or invalidate the JWT token stored on the client side
+        // This can be done by removing cookies or clearing local storage
+
+        // For example, if using cookies, you can clear the token cookie
+        Cookie tokenCookie = new Cookie(Constants.TOKEN_HEADER_AUTHORIZATION, null);
+        tokenCookie.setMaxAge(0);
+        tokenCookie.setHttpOnly(true);
+        tokenCookie.setPath("/");
+        response.addCookie(tokenCookie);
+
+        // You can also send a response indicating successful logout
+        return ResponseEntity.ok("Logged out successfully");
     }
 
 
