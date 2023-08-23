@@ -1,11 +1,14 @@
 package com.example.demo.security;
 
+import com.example.demo.exception.ResourceNotFoundException;
+import com.example.demo.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.util.Date;
 
@@ -35,6 +38,10 @@ public class JWTGenerator {
     }
 
     public boolean validateToken(String token){
+
+        if(!StringUtils.hasText(token)){
+            throw new UnauthorizedException("JWT was expired or incorrect");
+        }
         try{
             Jwts.parser().
                     setSigningKey(Constants.JWT_SECRET)
@@ -46,4 +53,5 @@ public class JWTGenerator {
         }
 
     }
+
 }
